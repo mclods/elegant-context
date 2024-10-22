@@ -15,7 +15,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": [
@@ -36,6 +37,12 @@
     ]
   },
   "devDependencies": {
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "3.3.3",
     "tailwindcss": "^3.4.14"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,css,html,md}": "prettier --write --ignore-unknown"
   }
 }
