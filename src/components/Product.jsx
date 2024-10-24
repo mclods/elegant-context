@@ -1,7 +1,20 @@
 import './Product.css';
 import { priceFormatter } from '../utils/price-formatter';
 
-function Product({ image, title, price, description, onAddItem }) {
+function Product({
+  id,
+  image,
+  title,
+  price,
+  description,
+  cartItems,
+  onAddItem,
+  onDeleteItem,
+}) {
+  const itemInCart = cartItems && cartItems.find((item) => item.id === id);
+  const buttonStyle =
+    'w-10 h-10 rounded-full font-quicksand font-bold text-xl bg-amber-400 truncate active:-translate-x-0.5 active:translate-y-0.5';
+
   return (
     <article className="flex flex-col bShadow rounded-lg w-full h-full">
       <img className="w-full rounded-t-lg" src={image} alt={title} />
@@ -17,11 +30,18 @@ function Product({ image, title, price, description, onAddItem }) {
             {description}
           </p>
         </div>
-        <div className="m-2 text-right">
-          <button
-            className="w-10 h-10 rounded-full font-quicksand font-bold text-xl bg-amber-400 truncate active:-translate-x-0.5 active:translate-y-0.5"
-            onClick={onAddItem}
-          >
+        <div className="m-2 flex justify-end items-center">
+          {itemInCart && (
+            <>
+              <button className={buttonStyle} onClick={onDeleteItem}>
+                -
+              </button>
+              <p className="w-10 font-merriweather font-bold text-lg text-center px-3">
+                {itemInCart.quantity}
+              </p>
+            </>
+          )}
+          <button className={buttonStyle} onClick={onAddItem}>
             +
           </button>
         </div>
