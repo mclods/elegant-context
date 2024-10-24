@@ -2,7 +2,7 @@ import Product from './Product';
 import { DUMMY_PRODUCTS } from '../utils/dummy-products';
 import './Shop.css';
 
-function Shop() {
+function Shop({ onAddItem }) {
   return (
     <section className="mx-[15%] py-10">
       <div className="mb-8">
@@ -19,6 +19,7 @@ function Shop() {
               title={product.title}
               price={product.price}
               description={product.description}
+              onAddItem={() => onAddItem(product.id)}
             />
           </li>
         ))}
