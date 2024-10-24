@@ -51,7 +51,7 @@ function App() {
         const currentItem = updatedItems[itemIndex];
 
         if (currentItem.quantity === 1) {
-          updatedItems.splice(itemIndex);
+          updatedItems.splice(itemIndex, 1);
         } else {
           const updatedItem = {
             ...currentItem,
@@ -84,7 +84,11 @@ function App() {
         onDeleteCart={onDeleteCart}
       />
       <main>
-        <Shop onAddItem={onAddItem} />
+        <Shop
+          cartItems={cart.items}
+          onAddItem={onAddItem}
+          onDeleteItem={onDeleteItem}
+        />
       </main>
     </>
   );
