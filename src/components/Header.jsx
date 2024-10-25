@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import CartModal from './CartModal';
 import Cart from './Cart';
+import { priceFormatter } from '../utils/price-formatter';
 
-function Header({ cartItems, onAddItem, onDeleteItem, onDeleteCart }) {
+function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
   const modalRef = useRef();
 
   function onCartClick() {
@@ -11,12 +12,20 @@ function Header({ cartItems, onAddItem, onDeleteItem, onDeleteCart }) {
 
   const isCartEmpty = cartItems ? cartItems.length === 0 : true;
 
-  const cartButtons = (
-    <>
-      {!isCartEmpty && <button onClick={onDeleteCart}>Clear Cart</button>}
-      <button>Close</button>
-      {!isCartEmpty && <button onClick={() => {}}>Checkout</button>}
-    </>
+  const cartButtons = !isCartEmpty ? (
+    <div className="flex gap-x-2 items-center">
+      <p className="font-quicksand font-bold">
+        Your Total:{' '}
+        <span className="text-red-700">{priceFormatter.format(total)}</span>
+      </p>
+      <div className="flex gap-x-2">
+        <button onClick={onDeleteCart}>Clear Cart</button>
+        <button>Close</button>
+        <button onClick={() => {}}>Checkout</button>
+      </div>
+    </div>
+  ) : (
+    <button>Close</button>
   );
 
   return (

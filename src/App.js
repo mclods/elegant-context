@@ -12,6 +12,7 @@ function App() {
       const updatedItems = [
         ...(prevCart.items || []).map((item) => ({ ...item })),
       ];
+      let cartTotal = prevCart.total || 0;
 
       const itemIndex = updatedItems.findIndex((item) => item.id === id);
       if (itemIndex !== -1) {
@@ -22,6 +23,7 @@ function App() {
         };
         updatedItem.quantity += 1;
         updatedItem.totalPrice += updatedItem.price;
+        cartTotal += updatedItem.price;
 
         updatedItems[itemIndex] = updatedItem;
       } else {
@@ -33,11 +35,14 @@ function App() {
           price: itemData.price,
           totalPrice: itemData.price,
         });
+
+        cartTotal += itemData.price;
       }
 
       return {
         ...prevCart,
         items: updatedItems,
+        total: cartTotal,
       };
     });
   }
@@ -45,12 +50,14 @@ function App() {
   function onDeleteItem(id) {
     setCart((prevCart) => {
       const updatedItems = [...prevCart.items.map((item) => ({ ...item }))];
+      let cartTotal = prevCart.total;
 
       const itemIndex = updatedItems.findIndex((item) => item.id === id);
       if (itemIndex !== -1) {
         const currentItem = updatedItems[itemIndex];
 
         if (currentItem.quantity === 1) {
+          cartTotal -= currentItem.price;
           updatedItems.splice(itemIndex, 1);
         } else {
           const updatedItem = {
@@ -59,6 +66,7 @@ function App() {
 
           updatedItem.quantity -= 1;
           updatedItem.totalPrice -= updatedItem.price;
+          cartTotal -= updatedItem.price;
 
           updatedItems[itemIndex] = updatedItem;
         }
@@ -67,6 +75,7 @@ function App() {
       return {
         ...prevCart,
         items: updatedItems,
+        total: cartTotal,
       };
     });
   }
@@ -79,6 +88,7 @@ function App() {
     <>
       <Header
         cartItems={cart.items}
+        total={cart.total}
         onAddItem={onAddItem}
         onDeleteItem={onDeleteItem}
         onDeleteCart={onDeleteCart}

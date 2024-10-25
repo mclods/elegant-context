@@ -26,7 +26,7 @@ const CartModal = forwardRef(function CartModal(
       </p>
       <div className="px-2">{modalContent}</div>
       <form method="dialog">
-        <div className="flex justify-end gap-x-2 modalButtonsContainer">
+        <div className="flex justify-end modalButtonsContainer">
           {modalButtons}
         </div>
       </form>
