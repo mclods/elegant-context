@@ -2,7 +2,7 @@ import { priceFormatter } from '../utils/price-formatter';
 
 function CartItem({ item, onAddItem, onDeleteItem }) {
   const buttonStyle =
-    'h-6 w-6 font-bold font-xl rounded-full shadow-md bg-slate-300';
+    'h-6 w-6 font-bold font-xl rounded-full shadow-md bg-slate-300 active:-translate-x-0.5 active:translate-y-0.5';
 
   return (
     <div className="flex justify-between" data-testid="cart-item">
