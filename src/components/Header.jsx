@@ -10,6 +10,11 @@ function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
     modalRef.current.open();
   }
 
+  function onClearCart(event) {
+    event.preventDefault();
+    onDeleteCart();
+  }
+
   const isCartEmpty = cartItems ? cartItems.length === 0 : true;
 
   const cartButtons = !isCartEmpty ? (
@@ -22,7 +27,7 @@ function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
         <span className="text-red-700">{priceFormatter.format(total)}</span>
       </p>
       <div className="flex gap-x-2">
-        <button onClick={onDeleteCart} data-testid="clear-cart-btn">
+        <button onClick={onClearCart} data-testid="clear-cart-btn">
           Clear Cart
         </button>
         <button data-testid="close-cart-btn">Close</button>
@@ -32,7 +37,7 @@ function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
       </div>
     </div>
   ) : (
-    <button>Close</button>
+    <button data-testid="close-cart-btn">Close</button>
   );
 
   return (

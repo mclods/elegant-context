@@ -23,7 +23,10 @@ function Cart({ cartItems, onAddItem, onDeleteItem }) {
           ))}
         </ul>
       ) : (
-        <p className="font-quicksand font-semibold text-lg text-center">
+        <p
+          className="font-quicksand font-semibold text-lg text-center"
+          data-testid="empty-cart-message"
+        >
           Your cart is empty :(
         </p>
       )}
