@@ -3,6 +3,7 @@ import './App.css';
 import Header from './components/Header';
 import Shop from './components/Shop';
 import { DUMMY_PRODUCTS } from './utils/dummy-products';
+import Product from './components/Product';
 
 function App() {
   const [cart, setCart] = useState({});
@@ -94,11 +95,22 @@ function App() {
         onDeleteCart={onDeleteCart}
       />
       <main>
-        <Shop
-          cartItems={cart.items}
-          onAddItem={onAddItem}
-          onDeleteItem={onDeleteItem}
-        />
+        <Shop>
+          {DUMMY_PRODUCTS.map((product) => (
+            <li key={product.id} data-testid="product-container">
+              <Product
+                id={product.id}
+                image={product.image}
+                title={product.title}
+                price={product.price}
+                description={product.description}
+                cartItems={cart.items}
+                onAddItem={() => onAddItem(product.id)}
+                onDeleteItem={() => onDeleteItem(product.id)}
+              />
+            </li>
+          ))}
+        </Shop>
       </main>
     </>
   );
