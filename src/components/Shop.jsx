@@ -1,8 +1,6 @@
-import Product from './Product';
-import { DUMMY_PRODUCTS } from '../utils/dummy-products';
 import './Shop.css';
 
-function Shop({ cartItems, onAddItem, onDeleteItem }) {
+function Shop({ children }) {
   return (
     <section className="mx-[15%] py-10" data-testid="shop-container">
       <div className="mb-8">
@@ -18,20 +16,7 @@ function Shop({ cartItems, onAddItem, onDeleteItem }) {
         className="grid gridTemplateCols gap-8"
         data-testid="products-container"
       >
-        {DUMMY_PRODUCTS.map((product) => (
-          <li key={product.id} data-testid="product-container">
-            <Product
-              id={product.id}
-              image={product.image}
-              title={product.title}
-              price={product.price}
-              description={product.description}
-              cartItems={cartItems}
-              onAddItem={() => onAddItem(product.id)}
-              onDeleteItem={() => onDeleteItem(product.id)}
-            />
-          </li>
-        ))}
+        {children}
       </ul>
     </section>
   );
