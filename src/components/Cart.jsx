@@ -1,23 +1,27 @@
 import CartItem from './CartItem';
+import { CartContext } from '../store/shopping-cart-context';
+import { useContext } from 'react';
 
-function Cart({ cartItems, onAddItem, onDeleteItem }) {
+function Cart() {
+  const { items, handleAddItem, handleDeleteItem } = useContext(CartContext);
+
   return (
     <section className="mb-4" data-testid="cart-container">
-      {cartItems && cartItems.length > 0 ? (
+      {items && items.length > 0 ? (
         <ul
           className="py-2 px-4 border border-slate-100 bg-slate-100 rounded-md shadow-inner"
           data-testid="cart-items-container"
         >
-          {cartItems.map((item, index) => (
+          {items.map((item, index) => (
             <li
               key={item.id}
-              className={`${index !== cartItems.length - 1 ? 'border-b border-b-slate-200' : ''}`}
+              className={`${index !== 0 ? 'border-t border-t-slate-200' : ''}`}
               data-testid="cart-item-container"
             >
               <CartItem
                 item={item}
-                onAddItem={onAddItem}
-                onDeleteItem={onDeleteItem}
+                onAddItem={() => handleAddItem(item.id)}
+                onDeleteItem={() => handleDeleteItem(item.id)}
               />
             </li>
           ))}

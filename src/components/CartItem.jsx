@@ -23,7 +23,7 @@ function CartItem({ item, onAddItem, onDeleteItem }) {
       <div className="flex items-center">
         <button
           className={buttonStyle}
-          onClick={() => onDeleteItem(item.id)}
+          onClick={onDeleteItem}
           data-testid="cart-item-delete-btn"
         >
           -
@@ -36,7 +36,7 @@ function CartItem({ item, onAddItem, onDeleteItem }) {
         </p>
         <button
           className={buttonStyle}
-          onClick={() => onAddItem(item.id)}
+          onClick={onAddItem}
           data-testid="cart-item-add-btn"
         >
           +

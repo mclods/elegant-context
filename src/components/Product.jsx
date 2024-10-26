@@ -1,17 +1,12 @@
 import './Product.css';
 import { priceFormatter } from '../utils/price-formatter';
+import { CartContext } from '../store/shopping-cart-context';
+import { useContext } from 'react';
 
-function Product({
-  id,
-  image,
-  title,
-  price,
-  description,
-  cartItems,
-  onAddItem,
-  onDeleteItem,
-}) {
-  const itemInCart = cartItems && cartItems.find((item) => item.id === id);
+function Product({ id, image, title, price, description }) {
+  const { items, handleAddItem, handleDeleteItem } = useContext(CartContext);
+
+  const itemInCart = items && items.find((item) => item.id === id);
   const buttonStyle =
     'w-10 h-10 rounded-full font-quicksand font-bold text-xl bg-amber-400 truncate active:-translate-x-0.5 active:translate-y-0.5';
 
@@ -55,7 +50,7 @@ function Product({
             <>
               <button
                 className={buttonStyle}
-                onClick={onDeleteItem}
+                onClick={() => handleDeleteItem(id)}
                 data-testid="delete-qty-btn"
               >
                 -
@@ -70,7 +65,7 @@ function Product({
           )}
           <button
             className={buttonStyle}
-            onClick={onAddItem}
+            onClick={() => handleAddItem(id)}
             data-testid="add-qty-btn"
           >
             +
