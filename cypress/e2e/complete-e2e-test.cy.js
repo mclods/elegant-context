@@ -129,7 +129,7 @@ describe('Test elegant-context App', () => {
     cy.getTestId('close-cart-btn').click();
   });
 
-  it('Test cart buttons', () => {
+  it('Test all cart buttons', () => {
     // Add one quantity of each product and open cart
     cy.get('[data-testid="products-container"] li').each((product) => {
       cy.wrap(product).find('[data-testid="add-qty-btn"]').click();
@@ -137,7 +137,16 @@ describe('Test elegant-context App', () => {
 
     // Delete one quantity of each product until the cart becomes empty
     cy.getTestId('cart-btn').click();
-    cy.get('[data-testid="cart-items-container"] li').each((cartItem) => {
+    cy.get('[data-testid="cart-items-container"] li').each((cartItem, i) => {
+      cy.get('[data-testid="cart-items-container"] li').each((cartItem, j) => {
+        cy.wrap(cartItem)
+          .find('[data-testid="cart-item-title"]')
+          .should('have.text', productData.products[i + j].title);
+        cy.wrap(cartItem)
+          .find('[data-testid="cart-item-price"]')
+          .should('have.text', `\$${productData.products[i + j].price}`);
+      });
+
       cy.wrap(cartItem).find('[data-testid="cart-item-delete-btn"]').click();
     });
     cy.getTestId('empty-cart-message').should(

@@ -1,10 +1,12 @@
-import { useRef } from 'react';
-import Modal from './Modal';
+import { useContext, useRef } from 'react';
+import Modal from './common/Modal';
 import Cart from './Cart';
 import { priceFormatter } from '../utils/price-formatter';
+import { CartContext } from '../store/shopping-cart-context';
 
-function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
+function Header() {
   const modalRef = useRef();
+  const { items, total, handleDeleteCart } = useContext(CartContext);
 
   function onCartClick() {
     modalRef.current.open();
@@ -12,46 +14,41 @@ function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
 
   function onClearCart(event) {
     event.preventDefault();
-    onDeleteCart();
+    handleDeleteCart();
   }
 
-  const isCartEmpty = cartItems ? cartItems.length === 0 : true;
+  const cartQuantity = items ? items.length : 0;
 
-  const cartButtons = !isCartEmpty ? (
-    <div
-      className="flex gap-x-2 items-center"
-      data-testid="cart-buttons-container"
-    >
-      <p className="font-quicksand font-bold" data-testid="cart-total">
-        Your Total:{' '}
-        <span className="text-red-700">{priceFormatter.format(total)}</span>
-      </p>
-      <div className="flex gap-x-2">
-        <button onClick={onClearCart} data-testid="clear-cart-btn">
-          Clear Cart
-        </button>
-        <button data-testid="close-cart-btn">Close</button>
-        <button onClick={() => {}} data-testid="checkout-btn">
-          Checkout
-        </button>
+  const cartButtons =
+    cartQuantity > 0 ? (
+      <div
+        className="flex gap-x-2 items-center"
+        data-testid="cart-buttons-container"
+      >
+        <p className="font-quicksand font-bold" data-testid="cart-total">
+          Your Total:{' '}
+          <span className="text-red-700">{priceFormatter.format(total)}</span>
+        </p>
+        <div className="flex gap-x-2">
+          <button onClick={onClearCart} data-testid="clear-cart-btn">
+            Clear Cart
+          </button>
+          <button data-testid="close-cart-btn">Close</button>
+          <button onClick={() => {}} data-testid="checkout-btn">
+            Checkout
+          </button>
+        </div>
       </div>
-    </div>
-  ) : (
-    <button data-testid="close-cart-btn">Close</button>
-  );
+    ) : (
+      <button data-testid="close-cart-btn">Close</button>
+    );
 
   return (
     <>
       <Modal
         ref={modalRef}
         title="Cart"
-        modalContent={
-          <Cart
-            cartItems={cartItems}
-            onAddItem={onAddItem}
-            onDeleteItem={onDeleteItem}
-          />
-        }
+        modalContent={<Cart />}
         modalButtons={cartButtons}
       />
       <header className="flex justify-between items-center px-[15%] py-10 bg-gradient-to-r from-[#31220b] to-[#382e1b]">
@@ -75,7 +72,7 @@ function Header({ cartItems, total, onAddItem, onDeleteItem, onDeleteCart }) {
           onClick={onCartClick}
           data-testid="cart-btn"
         >
-          Cart ({isCartEmpty ? 0 : cartItems.length})
+          Cart ({cartQuantity})
         </button>
       </header>
     </>
