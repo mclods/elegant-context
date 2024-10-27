@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { createContext, useReducer } from 'react';
 import { DUMMY_PRODUCTS } from '../utils/dummy-products';
 
 export const CartContext = createContext({
@@ -9,92 +9,117 @@ export const CartContext = createContext({
   handleDeleteCart: () => {},
 });
 
-function CartContextProvider({ children }) {
-  const [cart, setCart] = useState({
-    items: [],
-    total: 0,
-  });
+function cartReducer(state, action) {
+  if (action.type === 'ADD_ITEM') {
+    const updatedItems = [...(state.items || []).map((item) => ({ ...item }))];
+    let cartTotal = state.total || 0;
 
-  function onAddItem(id) {
-    setCart((prevCart) => {
-      const updatedItems = [
-        ...(prevCart.items || []).map((item) => ({ ...item })),
-      ];
-      let cartTotal = prevCart.total || 0;
+    const itemIndex = updatedItems.findIndex(
+      (item) => item.id === action.payload
+    );
+    if (itemIndex !== -1) {
+      const currentItem = updatedItems[itemIndex];
 
-      const itemIndex = updatedItems.findIndex((item) => item.id === id);
-      if (itemIndex !== -1) {
-        const currentItem = updatedItems[itemIndex];
+      const updatedItem = {
+        ...currentItem,
+      };
+      updatedItem.quantity += 1;
+      updatedItem.totalPrice += updatedItem.price;
+      cartTotal += updatedItem.price;
 
+      updatedItems[itemIndex] = updatedItem;
+    } else {
+      const itemData = DUMMY_PRODUCTS.find(
+        (product) => product.id === action.payload
+      );
+      updatedItems.push({
+        id: itemData.id,
+        title: itemData.title,
+        quantity: 1,
+        price: itemData.price,
+        totalPrice: itemData.price,
+      });
+
+      cartTotal += itemData.price;
+    }
+
+    return {
+      ...state,
+      items: updatedItems,
+      total: cartTotal,
+    };
+  }
+
+  if (action.type === 'DELETE_ITEM') {
+    const updatedItems = [...state.items.map((item) => ({ ...item }))];
+    let cartTotal = state.total;
+
+    const itemIndex = updatedItems.findIndex(
+      (item) => item.id === action.payload
+    );
+    if (itemIndex !== -1) {
+      const currentItem = updatedItems[itemIndex];
+
+      if (currentItem.quantity === 1) {
+        cartTotal -= currentItem.price;
+        updatedItems.splice(itemIndex, 1);
+      } else {
         const updatedItem = {
           ...currentItem,
         };
-        updatedItem.quantity += 1;
-        updatedItem.totalPrice += updatedItem.price;
-        cartTotal += updatedItem.price;
+
+        updatedItem.quantity -= 1;
+        updatedItem.totalPrice -= updatedItem.price;
+        cartTotal -= updatedItem.price;
 
         updatedItems[itemIndex] = updatedItem;
-      } else {
-        const itemData = DUMMY_PRODUCTS.find((product) => product.id === id);
-        updatedItems.push({
-          id: itemData.id,
-          title: itemData.title,
-          quantity: 1,
-          price: itemData.price,
-          totalPrice: itemData.price,
-        });
-
-        cartTotal += itemData.price;
       }
+    }
 
-      return {
-        ...prevCart,
-        items: updatedItems,
-        total: cartTotal,
-      };
+    return {
+      ...state,
+      items: updatedItems,
+      total: cartTotal,
+    };
+  }
+
+  if (action.type === 'DELETE_CART') {
+    return action.payload;
+  }
+}
+
+function CartContextProvider({ children }) {
+  const initialCartState = {
+    items: [],
+    total: 0,
+  };
+
+  const [cartState, cartDispatcher] = useReducer(cartReducer, initialCartState);
+
+  function onAddItem(id) {
+    cartDispatcher({
+      type: 'ADD_ITEM',
+      payload: id,
     });
   }
 
   function onDeleteItem(id) {
-    setCart((prevCart) => {
-      const updatedItems = [...prevCart.items.map((item) => ({ ...item }))];
-      let cartTotal = prevCart.total;
-
-      const itemIndex = updatedItems.findIndex((item) => item.id === id);
-      if (itemIndex !== -1) {
-        const currentItem = updatedItems[itemIndex];
-
-        if (currentItem.quantity === 1) {
-          cartTotal -= currentItem.price;
-          updatedItems.splice(itemIndex, 1);
-        } else {
-          const updatedItem = {
-            ...currentItem,
-          };
-
-          updatedItem.quantity -= 1;
-          updatedItem.totalPrice -= updatedItem.price;
-          cartTotal -= updatedItem.price;
-
-          updatedItems[itemIndex] = updatedItem;
-        }
-      }
-
-      return {
-        ...prevCart,
-        items: updatedItems,
-        total: cartTotal,
-      };
+    cartDispatcher({
+      type: 'DELETE_ITEM',
+      payload: id,
     });
   }
 
   function onDeleteCart() {
-    setCart({});
+    cartDispatcher({
+      type: 'DELETE_CART',
+      payload: initialCartState,
+    });
   }
 
   const ctxValue = {
-    items: cart.items,
-    total: cart.total,
+    items: cartState.items,
+    total: cartState.total,
     handleAddItem: onAddItem,
     handleDeleteItem: onDeleteItem,
     handleDeleteCart: onDeleteCart,
