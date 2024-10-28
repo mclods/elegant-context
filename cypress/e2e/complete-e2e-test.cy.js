@@ -1,3 +1,4 @@
+/// <reference types="Cypress" />
 import productData from '../fixtures/dummy-products.json';
 
 describe('Test elegant-context App', () => {
